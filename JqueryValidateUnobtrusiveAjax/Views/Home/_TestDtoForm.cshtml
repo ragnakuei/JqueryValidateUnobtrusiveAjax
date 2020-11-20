@@ -1,0 +1,39 @@
+﻿@model JqueryValidateUnobtrusiveAjax.Models.TestDto
+
+@{
+    Layout = null;
+}
+
+<form method="post" id="form">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <p>
+            <span asp-validation-for="Name"
+                  class="text-danger">
+            </span>
+        </p>
+    </div>
+    <div>
+        <label asp-for="UnitPrice"></label>
+        <input asp-for="UnitPrice" />
+        <p>
+            <span asp-validation-for="UnitPrice"
+                  class="text-danger">
+            </span>
+        </p>
+    </div>
+    <div>
+        <label asp-for="AssignDate"></label>
+        <input asp-for="AssignDate" />
+        <p>
+            <span asp-validation-for="AssignDate"
+                  class="text-danger">
+            </span>
+        </p>
+    </div>
+    <div>
+        <input type="submit"
+               value="Submit">
+    </div>
+</form>

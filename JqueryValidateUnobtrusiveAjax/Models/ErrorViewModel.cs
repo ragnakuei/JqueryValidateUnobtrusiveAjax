@@ -1,6 +1,4 @@
-using System;
-
-namespace JqueryValidateUnobtrusive03.Models
+namespace JqueryValidateUnobtrusiveAjax.Models
 {
     public class ErrorViewModel
     {

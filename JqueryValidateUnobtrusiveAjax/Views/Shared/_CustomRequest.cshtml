@@ -1,0 +1,91 @@
+﻿<script>
+    @* 將 CustomRequest 設計為狀態不共用 *@
+    window.CustomRequest = function(option)
+    {
+        const self = this;
+
+        @* 傳入參數需要的 Properties：
+           - RequireFullScreenLoading
+           - Url
+           - RequestBody
+           - SuccessCallback
+           - ErrorCallback(Optional)
+           - CompleteCallback(Optional)
+        *@
+        self.Option = option;
+
+        @* 下面是 Functions *@
+
+        self.Post = function()
+        {
+            // console.log(self.Option.ErrorCallback);
+            // console.log(self.Option.RequestBody);
+
+            try
+            {
+                $.ajax(
+                {
+                    beforeSend: function(request)
+                    {
+                        if (self.FullScreenLoading)
+                        {
+                            self.FullScreenLoading.Show();
+                        }
+                    },
+                    url: self.Option.Url,
+                    data: self.Option.RequestBody,
+                    type: 'post',
+
+                    // dataType: jQueryParameter.DataType,
+                    // contentType: jQueryParameter.ContentType,
+                }).done(function(e)
+                {
+                   self.Option.SuccessCallback(e);
+                }).fail(function (e)
+                {
+                   self.PostRequestError(e);
+
+                   if (self.Option.ErrorCallback)
+                   {
+                       self.Option.ErrorCallback(e.responseJSON);
+                   }
+                }).always(function (e){
+                   if (self.Option.CompleteCallback)
+                   {
+                       self.Option.CompleteCallback(e);
+                   }
+
+                   if (self.FullScreenLoading)
+                   {
+                       self.FullScreenLoading.Close();
+                   }
+                });
+            }
+            catch (e)
+            {
+                alert('發生錯誤，請聯絡開發人員 !');
+                console.log(e);
+            }
+        }
+
+        self.PostRequestError = function(jqXHR, textStatus, errorThrown)
+        {
+            // console.log(jqXHR);
+            // console.log(textStatus);
+            // console.log(errorThrown);
+            console.log(jqXHR.responseJSON);
+
+            if (jqXHR.responseJSON
+            && jqXHR.responseJSON.Message)
+            {
+                alert(jqXHR.responseJSON.Message);
+            }
+            else
+            {
+                alert('發生錯誤，請聯絡開發人員');
+            }
+
+            // console.log(self);
+        }
+    };
+</script>

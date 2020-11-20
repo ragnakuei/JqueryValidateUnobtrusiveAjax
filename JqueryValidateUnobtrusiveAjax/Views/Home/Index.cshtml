@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div id="dialog"></div>
+<p>
+    <input type="button" onclick="GetDialogContent.Get()" value="Open Dialog" />
+</p>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_CustomRequest" />
+    <link rel="stylesheet"
+          href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <script>
+        function AssignHtmlAndRegisterValidator(html){
+            if (html)
+            {
+                $('#dialog').html(html);
+
+                $.validator.unobtrusive.parse('#form');
+
+                $('#form').submit(function(e){
+                    PostDialogContent.Post();
+                    e.preventDefault();
+                });
+            }
+        }
+
+        $(function(){
+
+            @* jQuery UI Dialog *@
+            window.dialogObj = {};
+            dialogObj.Dialog = $('#dialog').dialog({
+                autoOpen: false,
+                modal: true,
+            });
+
+            @* Get Diglog Content *@
+            window.GetDialogContent = {};
+            GetDialogContent.Url = '@Url.Action("GetDialogContent", new { isNew = true })';
+            GetDialogContent.RequestBody = {}
+            GetDialogContent.Get = function(e)
+            {
+                GetDialogContent.Request.Post();
+            }
+            GetDialogContent.SuccessCallback = function(e)
+            {
+                dialogObj.Dialog.dialog( "open" );
+
+                AssignHtmlAndRegisterValidator(e.Data);
+            };
+            GetDialogContent.Request = new CustomRequest(GetDialogContent);
+
+            @* Post Diglog Content *@
+            window.PostDialogContent = {};
+            PostDialogContent.Url = '@Url.Action("GetDialogContent", new { isNew = false })';
+            PostDialogContent.RequestBody = {}
+            PostDialogContent.Post = function()
+            {
+                PostDialogContent.RequestBody = $('form').serialize();
+                PostDialogContent.Request.Post();
+            }
+            PostDialogContent.SuccessCallback = function(e)
+            {
+                AssignHtmlAndRegisterValidator(e.Data);
+
+                if (e.IsValid === true)
+                {
+                    alert('Post 完成');
+                    dialogObj.Dialog.dialog( "close" );
+                }
+            };
+            PostDialogContent.Request = new CustomRequest(PostDialogContent);
+        });
+
+    </script>
+}
